@@ -50,7 +50,7 @@ const pathname = Astro.url.pathname
             class="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1 group relative z-10"
             aria-label="Menü öffnen"
             aria-expanded="false"
-            aria-controls="mobile-menu"
+            aria-controls="mobile-drawer"
           >
             <span class="w-6 h-0.5 bg-slate-300 transition-all duration-300 ease-in-out group-hover:bg-brand-400 origin-center"></span>
             <span class="w-6 h-0.5 bg-slate-300 transition-all duration-300 ease-in-out group-hover:bg-brand-400"></span>
@@ -59,47 +59,46 @@ const pathname = Astro.url.pathname
         </div>
       </nav>
       
-      <!-- Mobile Menu -->
-      <div 
-        id="mobile-menu" 
-        class="md:hidden fixed inset-0 bg-slate-900/95 transform translate-x-full transition-transform duration-300 ease-in-out z-50"
-        role="dialog" aria-modal="true" tabindex="-1"
+      <!-- Mobile Menu (Overlay + Drawer) -->
+      <div id="mobile-overlay" class="md:hidden fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 ease-out bg-black/60"></div>
+      <aside 
+        id="mobile-drawer" 
+        class="md:hidden fixed inset-y-0 right-0 z-50 w-5/6 max-w-sm translate-x-full transition-transform duration-300 ease-out bg-slate-900 border-l border-slate-700 shadow-xl flex flex-col"
+        role="dialog" aria-modal="true" aria-labelledby="mobile-drawer-title" tabindex="-1"
       >
-        <div class="flex flex-col h-full">
-          <!-- Header -->
-          <div class="flex items-center justify-between p-6 border-b border-slate-700">
-            <h2 class="text-xl font-bold text-slate-100">Repair Café <span class="text-brand-400">Leonberg</span></h2>
-            <button 
-              id="mobile-menu-close"
-              class="p-2 hover:bg-slate-800 rounded-lg transition-colors"
-              aria-label="Menü schließen"
-            >
-              <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
-          </div>
-          
-          <!-- Menu Content -->
-          <div class="flex-1 p-6">
-            <nav>
-              <ul class="space-y-2">
-                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/events">Termine</a></li>
-                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/news">News</a></li>
-                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#mitmachen">Mitmachen</a></li>
-                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#anfahrt">Anfahrt</a></li>
-                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#spenden">Spenden</a></li>
-                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/admin">Admin</a></li>
-              </ul>
-            </nav>
-          </div>
-          
-          <!-- CTA Button at Bottom -->
-          <div class="p-6 border-t border-slate-700">
-            <a href="/events" class="block w-full text-center rounded-lg bg-brand-600 px-6 py-4 text-lg font-semibold text-white hover:bg-brand-700 transition-colors">Termin buchen</a>
-          </div>
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-slate-700">
+          <h2 id="mobile-drawer-title" class="text-xl font-bold text-slate-100">Repair Café <span class="text-brand-400">Leonberg</span></h2>
+          <button 
+            id="mobile-menu-close"
+            class="p-2 hover:bg-slate-800 rounded-lg transition-colors"
+            aria-label="Menü schließen"
+          >
+            <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
         </div>
-      </div>
+        
+        <!-- Menu Content -->
+        <div class="flex-1 p-6 overflow-y-auto">
+          <nav>
+            <ul class="space-y-2">
+              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/events">Termine</a></li>
+              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/news">News</a></li>
+              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#mitmachen">Mitmachen</a></li>
+              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#anfahrt">Anfahrt</a></li>
+              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#spenden">Spenden</a></li>
+              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/admin">Admin</a></li>
+            </ul>
+          </nav>
+        </div>
+        
+        <!-- CTA Button at Bottom -->
+        <div class="p-6 border-t border-slate-700">
+          <a href="/events" class="block w-full text-center rounded-lg bg-brand-600 px-6 py-4 text-lg font-semibold text-white hover:bg-brand-700 transition-colors">Termin buchen</a>
+        </div>
+      </aside>
     </header>
     <main id="main-content" class="mx-auto max-w-7xl px-6 lg:px-8">
       <slot />
@@ -115,12 +114,13 @@ const pathname = Astro.url.pathname
     </footer>
     
     <script>
-      // Enhanced mobile menu: accessibility, focus trap, smooth UX
+      // Mobile drawer with overlay: solid, accessible, focus-trapped
       const mobileMenuButton = document.getElementById('mobile-menu-button');
-      const mobileMenu = document.getElementById('mobile-menu');
+      const drawer = document.getElementById('mobile-drawer');
+      const overlay = document.getElementById('mobile-overlay');
       const mobileMenuClose = document.getElementById('mobile-menu-close');
       const main = document.getElementById('main-content');
-      if (mobileMenuButton && mobileMenu) {
+      if (mobileMenuButton && drawer && overlay) {
         let isOpen = false;
         let lastFocused = null;
         const getFocusable = (root) => root.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
@@ -138,7 +138,7 @@ const pathname = Astro.url.pathname
         };
         const trapTab = (e) => {
           if (!isOpen || e.key !== 'Tab') return;
-          const focusables = Array.from(getFocusable(mobileMenu));
+          const focusables = Array.from(getFocusable(drawer));
           if (focusables.length === 0) return;
           const first = focusables[0];
           const last = focusables[focusables.length - 1];
@@ -155,22 +155,28 @@ const pathname = Astro.url.pathname
           isOpen = true;
           lastFocused = document.activeElement;
           document.body.style.overflow = 'hidden';
-          mobileMenu.style.transform = 'translateX(0)';
+          drawer.style.transform = 'translateX(0)';
+          overlay.classList.remove('opacity-0', 'pointer-events-none');
+          overlay.classList.add('opacity-100', 'pointer-events-auto');
           mobileMenuButton.setAttribute('aria-expanded', 'true');
           mobileMenuButton.setAttribute('aria-label', 'Menü schließen');
           setHamburgerState(true);
-          const focusables = getFocusable(mobileMenu);
-          (focusables[0] || mobileMenuClose || mobileMenu).focus();
+          main?.setAttribute('aria-hidden', 'true');
+          const focusables = getFocusable(drawer);
+          (focusables[0] || mobileMenuClose || drawer).focus();
           document.addEventListener('keydown', trapTab);
         };
         const closeMenu = () => {
           if (!isOpen) return;
           isOpen = false;
           document.body.style.overflow = '';
-          mobileMenu.style.transform = 'translateX(100%)';
+          drawer.style.transform = 'translateX(100%)';
+          overlay.classList.add('opacity-0', 'pointer-events-none');
+          overlay.classList.remove('opacity-100', 'pointer-events-auto');
           mobileMenuButton.setAttribute('aria-expanded', 'false');
           mobileMenuButton.setAttribute('aria-label', 'Menü öffnen');
           setHamburgerState(false);
+          main?.removeAttribute('aria-hidden');
           document.removeEventListener('keydown', trapTab);
           if (lastFocused && typeof lastFocused.focus === 'function') {
             lastFocused.focus();
@@ -180,9 +186,9 @@ const pathname = Astro.url.pathname
         };
         mobileMenuButton.addEventListener('click', () => (isOpen ? closeMenu() : openMenu()));
         mobileMenuClose?.addEventListener('click', closeMenu);
-        mobileMenu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+        drawer.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) closeMenu(); });
-        mobileMenu.addEventListener('click', (e) => { if (e.target === mobileMenu) closeMenu(); });
+        overlay.addEventListener('click', closeMenu);
       }
     </script>
   </body>

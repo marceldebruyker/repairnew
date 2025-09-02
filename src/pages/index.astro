@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro'
 import { client, urlFor } from '../lib/sanity'
 import { NEXT_EVENT, HOMEPAGE_GALLERY, NEWS_LIST } from '../lib/queries'
 import '../styles/global.css'
+import MasonryGallery from '../components/MasonryGallery.astro'
 
 const [event, gallery, posts] = await Promise.all([
   client.fetch(NEXT_EVENT),
@@ -63,24 +64,7 @@ const [event, gallery, posts] = await Promise.all([
   <section aria-labelledby="galerie">
     <h2 id="galerie" class="text-2xl font-bold text-slate-100">Einblicke</h2>
     {gallery?.images?.length ? (
-      <ul class="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-        {gallery.images.map((img: any) => (
-          <li class="overflow-hidden rounded-lg">
-            <img
-              src={urlFor(img).width(800).height(600).fit('crop').quality(80).url()}
-              srcset={[
-                urlFor(img).width(480).height(360).url() + ' 480w',
-                urlFor(img).width(800).height(600).url() + ' 800w',
-                urlFor(img).width(1200).height(900).url() + ' 1200w',
-              ].join(', ')}
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              alt={img.alt}
-              class="h-full w-full object-cover"
-              loading="lazy"
-            />
-          </li>
-        ))}
-      </ul>
+      <MasonryGallery images={gallery.images} />
     ) : (
       <p class="mt-4 text-slate-400">Bald gibt's hier Fotos aus dem Repair Café.</p>
     )}
