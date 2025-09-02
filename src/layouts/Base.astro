@@ -44,24 +44,46 @@ const { title = 'Repair Café Leonberg', description = 'Gemeinsam reparieren sta
         </div>
       </nav>
       
+      <!-- Mobile Menu Overlay -->
+      <div 
+        id="mobile-menu-overlay" 
+        class="md:hidden fixed inset-0 bg-black/50 backdrop-blur opacity-0 invisible transition-all duration-300 ease-in-out z-30"
+      ></div>
+      
       <!-- Mobile Menu -->
       <div 
         id="mobile-menu" 
-        class="md:hidden fixed inset-x-0 top-16 bg-slate-900/95 backdrop-blur border-b border-slate-700 transform -translate-y-full transition-transform duration-300 ease-in-out z-40"
+        class="md:hidden fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-slate-800 border-l border-slate-700 transform translate-x-full transition-transform duration-300 ease-in-out z-40"
       >
-        <nav class="mx-auto max-w-7xl px-6 py-4">
-          <ul class="space-y-4">
-            <li><a class="block py-2 text-slate-300 hover:text-brand-400 transition-colors" href="/events">Termine</a></li>
-            <li><a class="block py-2 text-slate-300 hover:text-brand-400 transition-colors" href="/news">News</a></li>
-            <li><a class="block py-2 text-slate-300 hover:text-brand-400 transition-colors" href="/#mitmachen">Mitmachen</a></li>
-            <li><a class="block py-2 text-slate-300 hover:text-brand-400 transition-colors" href="/#anfahrt">Anfahrt</a></li>
-            <li><a class="block py-2 text-slate-300 hover:text-brand-400 transition-colors" href="/#spenden">Spenden</a></li>
-            <li><a class="block py-2 text-slate-300 hover:text-brand-400 transition-colors" href="/admin">Admin</a></li>
-            <li class="pt-2">
-              <a href="/events" class="block w-full text-center rounded-md bg-brand-600 px-4 py-3 font-semibold text-white hover:bg-brand-700 transition-colors">Termin buchen</a>
-            </li>
-          </ul>
-        </nav>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-8">
+            <h2 class="text-lg font-semibold text-slate-100">Menü</h2>
+            <button 
+              id="mobile-menu-close"
+              class="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+              aria-label="Menü schließen"
+            >
+              <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          
+          <nav>
+            <ul class="space-y-1">
+              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/events">Termine</a></li>
+              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/news">News</a></li>
+              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/#mitmachen">Mitmachen</a></li>
+              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/#anfahrt">Anfahrt</a></li>
+              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/#spenden">Spenden</a></li>
+              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/admin">Admin</a></li>
+            </ul>
+            
+            <div class="mt-8">
+              <a href="/events" class="block w-full text-center rounded-lg bg-brand-600 px-4 py-3 font-semibold text-white hover:bg-brand-700 transition-colors">Termin buchen</a>
+            </div>
+          </nav>
+        </div>
       </div>
     </header>
     <main class="mx-auto max-w-7xl px-6 lg:px-8">
@@ -81,51 +103,71 @@ const { title = 'Repair Café Leonberg', description = 'Gemeinsam reparieren sta
       // Mobile menu toggle functionality
       const mobileMenuButton = document.getElementById('mobile-menu-button');
       const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+      const mobileMenuClose = document.getElementById('mobile-menu-close');
       
-      if (mobileMenuButton && mobileMenu) {
+      if (mobileMenuButton && mobileMenu && mobileMenuOverlay) {
         let isOpen = false;
         
-        mobileMenuButton.addEventListener('click', () => {
-          isOpen = !isOpen;
-          
-          // Toggle menu visibility
-          if (isOpen) {
-            mobileMenu.style.transform = 'translateY(0)';
-            mobileMenuButton.setAttribute('aria-expanded', 'true');
-            mobileMenuButton.setAttribute('aria-label', 'Menü schließen');
-          } else {
-            mobileMenu.style.transform = 'translateY(-100%)';
-            mobileMenuButton.setAttribute('aria-expanded', 'false');
-            mobileMenuButton.setAttribute('aria-label', 'Menü öffnen');
-          }
+        const openMenu = () => {
+          isOpen = true;
+          document.body.style.overflow = 'hidden'; // Prevent scroll
+          mobileMenu.style.transform = 'translateX(0)';
+          mobileMenuOverlay.style.opacity = '1';
+          mobileMenuOverlay.style.visibility = 'visible';
+          mobileMenuButton.setAttribute('aria-expanded', 'true');
+          mobileMenuButton.setAttribute('aria-label', 'Menü schließen');
           
           // Animate hamburger to X
           const spans = mobileMenuButton.querySelectorAll('span');
+          spans[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
+          spans[1].style.opacity = '0';
+          spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+        };
+        
+        const closeMenu = () => {
+          isOpen = false;
+          document.body.style.overflow = '';
+          mobileMenu.style.transform = 'translateX(100%)';
+          mobileMenuOverlay.style.opacity = '0';
+          mobileMenuOverlay.style.visibility = 'hidden';
+          mobileMenuButton.setAttribute('aria-expanded', 'false');
+          mobileMenuButton.setAttribute('aria-label', 'Menü öffnen');
+          
+          // Reset hamburger
+          const spans = mobileMenuButton.querySelectorAll('span');
+          spans[0].style.transform = 'none';
+          spans[1].style.opacity = '1';
+          spans[2].style.transform = 'none';
+        };
+        
+        // Toggle menu
+        mobileMenuButton.addEventListener('click', () => {
           if (isOpen) {
-            spans[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
-            spans[1].style.opacity = '0';
-            spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+            closeMenu();
           } else {
-            spans[0].style.transform = 'none';
-            spans[1].style.opacity = '1';
-            spans[2].style.transform = 'none';
+            openMenu();
           }
         });
+        
+        // Close button
+        if (mobileMenuClose) {
+          mobileMenuClose.addEventListener('click', closeMenu);
+        }
+        
+        // Close when clicking overlay
+        mobileMenuOverlay.addEventListener('click', closeMenu);
         
         // Close menu when clicking on links
         const mobileLinks = mobileMenu.querySelectorAll('a');
         mobileLinks.forEach(link => {
-          link.addEventListener('click', () => {
-            if (isOpen) {
-              mobileMenuButton.click();
-            }
-          });
+          link.addEventListener('click', closeMenu);
         });
         
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-          if (isOpen && !mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
-            mobileMenuButton.click();
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && isOpen) {
+            closeMenu();
           }
         });
       }
