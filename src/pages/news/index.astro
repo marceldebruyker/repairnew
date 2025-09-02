@@ -1,7 +1,8 @@
 ---
 export const prerender = false
 import Base from '../../layouts/Base.astro'
-import { client, urlFor } from '../../lib/sanity'
+import { client } from '../../lib/sanity'
+import SanityImage from '../../components/SanityImage.astro'
 import { NEWS_LIST } from '../../lib/queries'
 
 const posts = await client.fetch(NEWS_LIST)
@@ -13,20 +14,7 @@ const posts = await client.fetch(NEWS_LIST)
       <li class="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 shadow-soft hover:shadow-lg transition">
         <a href={`/news/${p.slug?.current ?? ''}`} class="block">
           {p.cover && (
-            <img
-              src={urlFor(p.cover).width(800).height(450).fit('crop').quality(80).url()}
-              srcset={[
-                urlFor(p.cover).width(480).height(270).url() + ' 480w',
-                urlFor(p.cover).width(800).height(450).url() + ' 800w',
-                urlFor(p.cover).width(1200).height(675).url() + ' 1200w',
-              ].join(', ')}
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              width="800" height="450"
-              alt={p.title}
-              class="mb-3 w-full aspect-[16/9] rounded-md object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+            <SanityImage image={p.cover} alt={p.title} width={800} height={450} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" class="mb-3 w-full aspect-[16/9] rounded-md object-cover" />
           )}
           <h2 class="text-lg font-semibold text-slate-100">{p.title}</h2>
           <p class="mt-1 text-sm text-slate-400">{new Date(p.date ?? p.publishedAt).toLocaleDateString('de-DE')}</p>

@@ -3,6 +3,8 @@ export const prerender = false
 import Base from '../../layouts/Base.astro'
 import PT from '../../components/PortableText'
 import { client, urlFor } from '../../lib/sanity'
+import SanityImage from '../../components/SanityImage.astro'
+import { formatDateTime } from '../../lib/date'
 import { EVENT_BY_SLUG } from '../../lib/queries'
 
 const { slug } = Astro.params
@@ -12,26 +14,10 @@ const event = await client.fetch(EVENT_BY_SLUG, { slug })
   {event ? (
     <article class="pt-12 max-w-3xl">
       <h1 class="text-3xl font-bold text-slate-100">{event.title}</h1>
-      <p class="mt-2 text-slate-300">
-        {new Date(event.start).toLocaleString('de-DE', { dateStyle: 'full', timeStyle: 'short' })}
-        {event.location ? ` · ${event.location}` : ''}
-      </p>
+      <p class="mt-2 text-slate-300">{formatDateTime(event.start)}{event.location ? ` · ${event.location}` : ''}</p>
       {event.cancelled && <p class="mt-2 inline-block rounded-full bg-rose-900/20 px-2.5 py-1 text-xs font-medium text-rose-300">Abgesagt</p>}
       {event.hero && (
-        <img
-          src={urlFor(event.hero).width(1200).height(675).fit('crop').quality(80).url()}
-          srcset={[
-            urlFor(event.hero).width(480).height(270).url() + ' 480w',
-            urlFor(event.hero).width(800).height(450).url() + ' 800w',
-            urlFor(event.hero).width(1200).height(675).url() + ' 1200w',
-          ].join(', ')}
-          sizes="(min-width: 1024px) 800px, 100vw"
-          width="1200" height="675"
-          alt={event.title}
-          class="mt-6 w-full aspect-[16/9] rounded-lg object-cover"
-          loading="lazy"
-          decoding="async"
-        />
+        <SanityImage image={event.hero} alt={event.title} width={1200} height={675} sizes="(min-width: 1024px) 800px, 100vw" class="mt-6 w-full aspect-[16/9] rounded-lg object-cover" />
       )}
       {event.description && (
         <div class="prose prose-invert mt-6">

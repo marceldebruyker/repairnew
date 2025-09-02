@@ -1,7 +1,9 @@
 ---
 export const prerender = false
 import Base from '../../layouts/Base.astro'
-import { client, urlFor } from '../../lib/sanity'
+import { client } from '../../lib/sanity'
+import SanityImage from '../../components/SanityImage.astro'
+import { formatDateTime } from '../../lib/date'
 import { EVENTS_PAGE } from '../../lib/queries'
 
 const { upcoming = [], past = [] } = await client.fetch(EVENTS_PAGE) ?? {}
@@ -15,25 +17,9 @@ const { upcoming = [], past = [] } = await client.fetch(EVENTS_PAGE) ?? {}
       <li class="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 shadow-soft hover:shadow-lg transition">
         <a href={`/events/${e.slug?.current ?? ''}`} class="block">
           <h3 class="text-lg font-semibold text-slate-100">{e.title}</h3>
-          <p class="text-sm text-slate-300">
-            {new Date(e.start).toLocaleString('de-DE', { dateStyle: 'long', timeStyle: 'short' })}
-            {e.location ? ` · ${e.location}` : ''}
-          </p>
+          <p class="text-sm text-slate-300">{formatDateTime(e.start)}{e.location ? ` · ${e.location}` : ''}</p>
           {e.hero && (
-            <img
-              src={urlFor(e.hero).width(800).height(450).fit('crop').quality(80).url()}
-              srcset={[
-                urlFor(e.hero).width(480).height(270).url() + ' 480w',
-                urlFor(e.hero).width(800).height(450).url() + ' 800w',
-                urlFor(e.hero).width(1200).height(675).url() + ' 1200w',
-              ].join(', ')}
-              sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
-              width="800" height="450"
-              alt={e.title}
-              class="mt-3 w-full aspect-[16/9] rounded-md object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+            <SanityImage image={e.hero} alt={e.title} width={800} height={450} sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw" class="mt-3 w-full aspect-[16/9] rounded-md object-cover" />
           )}
         </a>
       </li>

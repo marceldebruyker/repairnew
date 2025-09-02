@@ -2,6 +2,8 @@
 export const prerender = false
 import Base from '../layouts/Base.astro'
 import { client, urlFor } from '../lib/sanity'
+import SanityImage from '../components/SanityImage.astro'
+import { formatDateTime } from '../lib/date'
 import { NEXT_EVENT, HOMEPAGE_GALLERY, NEWS_LIST } from '../lib/queries'
 import '../styles/global.css'
 import MasonryGallery from '../components/MasonryGallery.astro'
@@ -27,27 +29,10 @@ const [event, gallery, posts] = await Promise.all([
     <section class="mb-12 rounded-2xl border border-slate-700 bg-slate-800/50 p-6 shadow-soft">
       <p class="text-sm font-semibold text-brand-400">Nächstes Event</p>
       <h2 class="mt-2 text-2xl font-bold text-slate-100">{event.title}</h2>
-      <p class="mt-1 text-slate-300">
-        {new Date(event.start).toLocaleString('de-DE', { dateStyle: 'full', timeStyle: 'short' })}
-        {event.location ? ` · ${event.location}` : ''}
-      </p>
+      <p class="mt-1 text-slate-300">{formatDateTime(event.start)}{event.location ? ` · ${event.location}` : ''}</p>
       {event.cancelled && <p class="mt-2 inline-block rounded-full bg-rose-900/20 px-2.5 py-1 text-xs font-medium text-rose-400">Abgesagt</p>}
       {event.hero && (
-        <img
-          src={urlFor(event.hero).width(1200).height(675).fit('crop').quality(80).url()}
-          srcset={[
-            urlFor(event.hero).width(480).height(270).url() + ' 480w',
-            urlFor(event.hero).width(800).height(450).url() + ' 800w',
-            urlFor(event.hero).width(1200).height(675).url() + ' 1200w',
-          ].join(', ')}
-          sizes="(min-width: 1024px) 800px, 100vw"
-          width="1200" height="675"
-          alt={event.title}
-          class="mt-4 w-full aspect-[16/9] rounded-lg object-cover"
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-        />
+        <SanityImage image={event.hero} alt={event.title} width={1200} height={675} sizes="(min-width: 1024px) 800px, 100vw" class="mt-4 w-full aspect-[16/9] rounded-lg object-cover" loading="eager" fetchpriority="high" />
       )}
       <div class="mt-6 flex gap-3">
         <a href={`/events/${event.slug?.current ?? ''}`} class="rounded-md bg-brand-600 px-4 py-2 text-white font-semibold hover:bg-brand-700">Details</a>
@@ -77,20 +62,7 @@ const [event, gallery, posts] = await Promise.all([
         <li class="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 shadow-soft hover:shadow-lg transition">
           <a href={`/news/${p.slug?.current ?? ''}`} class="block">
             {p.cover && (
-              <img
-                src={urlFor(p.cover).width(800).height(450).fit('crop').quality(80).url()}
-                srcset={[
-                  urlFor(p.cover).width(480).height(270).url() + ' 480w',
-                  urlFor(p.cover).width(800).height(450).url() + ' 800w',
-                  urlFor(p.cover).width(1200).height(675).url() + ' 1200w',
-                ].join(', ')}
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                width="800" height="450"
-                alt={p.title}
-                class="mb-3 w-full aspect-[16/9] rounded-md object-cover"
-                loading="lazy"
-                decoding="async"
-              />
+              <SanityImage image={p.cover} alt={p.title} width={800} height={450} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" class="mb-3 w-full aspect-[16/9] rounded-md object-cover" />
             )}
             <h3 class="text-lg font-semibold text-slate-100">{p.title}</h3>
             <p class="mt-1 text-sm text-slate-400">{new Date((p as any).date ?? p.publishedAt).toLocaleDateString('de-DE')}</p>
