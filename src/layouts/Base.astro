@@ -1,195 +1,24 @@
 ---
-const {
-  title = 'Repair Café Leonberg',
-  description = 'Gemeinsam reparieren statt wegwerfen.',
-  image
-} = Astro.props
-const pathname = Astro.url.pathname
+import Seo from '../components/Seo.astro'
+import Nav from '../components/Nav.astro'
+import Footer from '../components/Footer.astro'
+const { title = 'Repair Café Leonberg', description = 'Gemeinsam reparieren statt wegwerfen.', image } = Astro.props
 ---
 <!doctype html>
 <html lang="de" class="scroll-smooth dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={Astro.url.href} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url.href} />
-    <meta property="og:image" content={image ?? '/favicon.ico'} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#059669" />
+    <Seo title={title} description={description} image={image} />
     <link rel="preconnect" href="https://cdn.sanity.io" />
     <link rel="icon" href="/favicon.ico" />
   </head>
   <body class="min-h-dvh bg-slate-900 text-slate-100">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-brand-600 focus:text-white focus:px-4 focus:py-2">Zum Inhalt springen</a>
-    <header class="sticky top-0 z-50 backdrop-blur bg-slate-900/80 border-b border-slate-700">
-      <nav class="mx-auto max-w-7xl px-6 lg:px-8 h-16 flex items-center justify-between" role="navigation" aria-label="Hauptnavigation">
-        <a href="/" class="font-extrabold tracking-tight text-xl text-slate-100">Repair Café <span class="text-brand-400">Leonberg</span></a>
-        
-        <!-- Desktop Menu -->
-        <ul class="hidden md:flex gap-6 text-sm">
-          <li><a class="hover:underline text-slate-300 hover:text-slate-100" href="/events" aria-current={pathname.startsWith('/events') ? 'page' : undefined}>Termine</a></li>
-          <li><a class="hover:underline text-slate-300 hover:text-slate-100" href="/news" aria-current={pathname.startsWith('/news') ? 'page' : undefined}>News</a></li>
-          <li><a class="hover:underline text-slate-300 hover:text-slate-100" href="/#mitmachen">Mitmachen</a></li>
-          <li><a class="hover:underline text-slate-300 hover:text-slate-100" href="/#anfahrt">Anfahrt</a></li>
-          <li><a class="hover:underline text-slate-300 hover:text-slate-100" href="/#spenden">Spenden</a></li>
-          <li><a class="hover:underline text-slate-300 hover:text-slate-100" href="/admin">Admin</a></li>
-        </ul>
-        
-        <div class="flex items-center gap-4">
-          <!-- Desktop CTA Button -->
-          <a href="/events" class="hidden md:block rounded-md bg-brand-600 px-3.5 py-2 text-sm font-semibold text-white shadow hover:bg-brand-700">Termin buchen</a>
-          
-          <!-- Mobile Menu Button -->
-          <button 
-            id="mobile-menu-button"
-            class="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1 group relative z-10"
-            aria-label="Menü öffnen"
-            aria-expanded="false"
-            aria-controls="mobile-drawer"
-          >
-            <span class="w-6 h-0.5 bg-slate-300 transition-all duration-300 ease-in-out group-hover:bg-brand-400 origin-center"></span>
-            <span class="w-6 h-0.5 bg-slate-300 transition-all duration-300 ease-in-out group-hover:bg-brand-400"></span>
-            <span class="w-6 h-0.5 bg-slate-300 transition-all duration-300 ease-in-out group-hover:bg-brand-400 origin-center"></span>
-          </button>
-        </div>
-      </nav>
-      
-      <!-- Mobile Menu (Overlay + Drawer) -->
-      <div id="mobile-overlay" class="md:hidden fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 ease-out bg-black/60"></div>
-      <aside 
-        id="mobile-drawer" 
-        class="md:hidden fixed inset-y-0 right-0 z-50 w-5/6 max-w-sm translate-x-full transition-transform duration-300 ease-out bg-slate-900 border-l border-slate-700 shadow-xl flex flex-col"
-        role="dialog" aria-modal="true" aria-labelledby="mobile-drawer-title" tabindex="-1"
-      >
-        <!-- Header -->
-        <div class="flex items-center justify-between p-6 border-b border-slate-700">
-          <h2 id="mobile-drawer-title" class="text-xl font-bold text-slate-100">Repair Café <span class="text-brand-400">Leonberg</span></h2>
-          <button 
-            id="mobile-menu-close"
-            class="p-2 hover:bg-slate-800 rounded-lg transition-colors"
-            aria-label="Menü schließen"
-          >
-            <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-        
-        <!-- Menu Content -->
-        <div class="flex-1 p-6 overflow-y-auto">
-          <nav>
-            <ul class="space-y-2">
-              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/events">Termine</a></li>
-              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/news">News</a></li>
-              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#mitmachen">Mitmachen</a></li>
-              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#anfahrt">Anfahrt</a></li>
-              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#spenden">Spenden</a></li>
-              <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/admin">Admin</a></li>
-            </ul>
-          </nav>
-        </div>
-        
-        <!-- CTA Button at Bottom -->
-        <div class="p-6 border-t border-slate-700">
-          <a href="/events" class="block w-full text-center rounded-lg bg-brand-600 px-6 py-4 text-lg font-semibold text-white hover:bg-brand-700 transition-colors">Termin buchen</a>
-        </div>
-      </aside>
-    </header>
+    <Nav />
     <main id="main-content" class="mx-auto max-w-7xl px-6 lg:px-8">
       <slot />
     </main>
-    <footer class="mt-24 border-t border-slate-700 py-10 text-sm text-slate-400">
-      <div class="mx-auto max-w-7xl px-6 lg:px-8 flex items-center justify-between">
-        <p>© {new Date().getFullYear()} Repair Café Leonberg</p>
-        <div class="space-x-4">
-          <a class="hover:underline hover:text-slate-300" href="/impressum">Impressum</a>
-          <a class="hover:underline hover:text-slate-300" href="/datenschutz">Datenschutz</a>
-        </div>
-      </div>
-    </footer>
-    
-    <script>
-      // Mobile drawer with overlay: solid, accessible, focus-trapped
-      const mobileMenuButton = document.getElementById('mobile-menu-button');
-      const drawer = document.getElementById('mobile-drawer');
-      const overlay = document.getElementById('mobile-overlay');
-      const mobileMenuClose = document.getElementById('mobile-menu-close');
-      const main = document.getElementById('main-content');
-      if (mobileMenuButton && drawer && overlay) {
-        let isOpen = false;
-        let lastFocused = null;
-        const getFocusable = (root) => root.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
-        const setHamburgerState = (open) => {
-          const spans = mobileMenuButton.querySelectorAll('span');
-          if (open) {
-            spans[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
-            spans[1].style.opacity = '0';
-            spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
-          } else {
-            spans[0].style.transform = 'none';
-            spans[1].style.opacity = '1';
-            spans[2].style.transform = 'none';
-          }
-        };
-        const trapTab = (e) => {
-          if (!isOpen || e.key !== 'Tab') return;
-          const focusables = Array.from(getFocusable(drawer));
-          if (focusables.length === 0) return;
-          const first = focusables[0];
-          const last = focusables[focusables.length - 1];
-          if (e.shiftKey && document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          } else if (!e.shiftKey && document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
-        };
-        const openMenu = () => {
-          if (isOpen) return;
-          isOpen = true;
-          lastFocused = document.activeElement;
-          document.body.style.overflow = 'hidden';
-          drawer.style.transform = 'translateX(0)';
-          overlay.classList.remove('opacity-0', 'pointer-events-none');
-          overlay.classList.add('opacity-100', 'pointer-events-auto');
-          mobileMenuButton.setAttribute('aria-expanded', 'true');
-          mobileMenuButton.setAttribute('aria-label', 'Menü schließen');
-          setHamburgerState(true);
-          main?.setAttribute('aria-hidden', 'true');
-          const focusables = getFocusable(drawer);
-          (focusables[0] || mobileMenuClose || drawer).focus();
-          document.addEventListener('keydown', trapTab);
-        };
-        const closeMenu = () => {
-          if (!isOpen) return;
-          isOpen = false;
-          document.body.style.overflow = '';
-          drawer.style.transform = 'translateX(100%)';
-          overlay.classList.add('opacity-0', 'pointer-events-none');
-          overlay.classList.remove('opacity-100', 'pointer-events-auto');
-          mobileMenuButton.setAttribute('aria-expanded', 'false');
-          mobileMenuButton.setAttribute('aria-label', 'Menü öffnen');
-          setHamburgerState(false);
-          main?.removeAttribute('aria-hidden');
-          document.removeEventListener('keydown', trapTab);
-          if (lastFocused && typeof lastFocused.focus === 'function') {
-            lastFocused.focus();
-          } else {
-            mobileMenuButton.focus();
-          }
-        };
-        mobileMenuButton.addEventListener('click', () => (isOpen ? closeMenu() : openMenu()));
-        mobileMenuClose?.addEventListener('click', closeMenu);
-        drawer.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) closeMenu(); });
-        overlay.addEventListener('click', closeMenu);
-      }
-    </script>
+    <Footer />
   </body>
 </html>

@@ -1,0 +1,34 @@
+---
+import { urlFor } from '../lib/sanity'
+type Props = {
+  image: any
+  alt?: string
+  width: number
+  height: number
+  sizes: string
+  class?: string
+  loading?: 'eager' | 'lazy'
+  fetchpriority?: 'high' | 'low' | 'auto'
+  decoding?: 'async' | 'auto' | 'sync'
+}
+const props = Astro.props as Props
+const ratio = props.height / props.width
+const widths = [480, 800, 1200]
+const srcset = widths
+  .map((w) => `${urlFor(props.image).width(w).height(Math.round(w * ratio)).quality(80).url()} ${w}w`)
+  .join(', ')
+const src = urlFor(props.image).width(Math.max(...widths)).height(Math.round(Math.max(...widths) * ratio)).quality(80).url()
+---
+<img
+  src={src}
+  srcset={srcset}
+  sizes={props.sizes}
+  alt={props.alt ?? ''}
+  width={props.width}
+  height={props.height}
+  loading={props.loading ?? 'lazy'}
+  decoding={props.decoding ?? 'async'}
+  fetchpriority={props.fetchpriority}
+  class={props.class}
+/>
+

@@ -2,7 +2,8 @@
 export const prerender = false
 import Base from '../../layouts/Base.astro'
 import PT from '../../components/PortableText'
-import { client, urlFor } from '../../lib/sanity'
+import { client } from '../../lib/sanity'
+import SanityImage from '../../components/SanityImage.astro'
 import { POST_BY_SLUG } from '../../lib/queries'
 
 const { slug } = Astro.params
@@ -14,20 +15,7 @@ const post = await client.fetch(POST_BY_SLUG, { slug })
       <h1 class="text-3xl font-bold text-slate-100">{post.title}</h1>
       <p class="mt-2 text-slate-300">{new Date(post.date ?? post.publishedAt).toLocaleDateString('de-DE')}</p>
       {post.cover && (
-        <img
-          src={urlFor(post.cover).width(1200).height(675).fit('crop').quality(80).url()}
-          srcset={[
-            urlFor(post.cover).width(480).height(270).url() + ' 480w',
-            urlFor(post.cover).width(800).height(450).url() + ' 800w',
-            urlFor(post.cover).width(1200).height(675).url() + ' 1200w',
-          ].join(', ')}
-          sizes="(min-width: 1024px) 800px, 100vw"
-          width="1200" height="675"
-          alt={post.title}
-          class="mt-6 w-full aspect-[16/9] rounded-lg object-cover"
-          loading="lazy"
-          decoding="async"
-        />
+        <SanityImage image={post.cover} alt={post.title} width={1200} height={675} sizes="(min-width: 1024px) 800px, 100vw" class="mt-6 w-full aspect-[16/9] rounded-lg object-cover" />
       )}
       {post.content && (
         <div class="prose prose-invert mt-6">
