@@ -1,16 +1,16 @@
 export const NEXT_EVENT = `
-*[_type == "event" && !cancelled && start >= now()]
+*[_type == "event" && !cancelled && start >= now() && defined(slug.current)]
 | order(start asc)[0]{
   _id, title, slug, start, end, location, bookingUrl, hero, description
 }`
 
 export const EVENTS_PAGE = `
 {
-  "upcoming": *[_type == "event" && !cancelled && start >= now()]
+  "upcoming": *[_type == "event" && !cancelled && start >= now() && defined(slug.current)]
     | order(start asc){
       _id, title, slug, start, end, location, hero
     },
-  "past": *[_type == "event" && start < now()]
+  "past": *[_type == "event" && start < now() && defined(slug.current)]
     | order(start desc)[0...200]{
       _id, title, slug, start, end, location, hero
     }
@@ -22,7 +22,8 @@ export const HOMEPAGE_GALLERY = `
 }`
 
 export const NEWS_LIST = `
-*[_type == "post"] | order(dateTime(publishedAt) desc)[0...6]{
+*[_type == "post" && defined(slug.current) && dateTime(publishedAt) <= now()]
+  | order(dateTime(publishedAt) desc)[0...6]{
   _id, title, slug, publishedAt, excerpt, cover
 }`
 

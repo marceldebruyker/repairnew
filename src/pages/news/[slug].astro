@@ -1,20 +1,54 @@
 ---
 export const prerender = false
 import Base from '../../layouts/Base.astro'
+import PT from '../../components/PortableText'
 import { client, urlFor } from '../../lib/sanity'
 import { POST_BY_SLUG } from '../../lib/queries'
 
 const { slug } = Astro.params
 const post = await client.fetch(POST_BY_SLUG, { slug })
 ---
-<Base title={`${post?.title ?? 'News'} – Repair Café Leonberg`}>
+<Base title={`${post?.title ?? 'News'} – Repair Café Leonberg`} image={post?.cover ? urlFor(post.cover).width(1200).height(630).fit('crop').url() : undefined}>
   {post ? (
     <article class="pt-12 max-w-3xl">
-      <h1 class="text-3xl font-bold">{post.title}</h1>
-      <p class="mt-2 text-slate-700">{new Date(post.publishedAt).toLocaleDateString('de-DE')}</p>
-      {post.cover && <img src={urlFor(post.cover).width(1200).height(675).fit('crop').quality(80).url()} alt={post.title} class="mt-6 w-full aspect-[16/9] rounded-lg object-cover" loading="lazy" />}
+      <h1 class="text-3xl font-bold text-slate-100">{post.title}</h1>
+      <p class="mt-2 text-slate-300">{new Date(post.publishedAt).toLocaleDateString('de-DE')}</p>
+      {post.cover && (
+        <img
+          src={urlFor(post.cover).width(1200).height(675).fit('crop').quality(80).url()}
+          srcset={[
+            urlFor(post.cover).width(480).height(270).url() + ' 480w',
+            urlFor(post.cover).width(800).height(450).url() + ' 800w',
+            urlFor(post.cover).width(1200).height(675).url() + ' 1200w',
+          ].join(', ')}
+          sizes="(min-width: 1024px) 800px, 100vw"
+          width="1200" height="675"
+          alt={post.title}
+          class="mt-6 w-full aspect-[16/9] rounded-lg object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+      {post.content && (
+        <div class="prose prose-invert mt-6">
+          <PT value={post.content} />
+        </div>
+      )}
     </article>
   ) : (
     <p class="pt-12">Beitrag nicht gefunden.</p>
+  )}
+  {post && (
+    <script type="application/ld+json">
+      {JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        datePublished: post.publishedAt,
+        description: post.excerpt ?? undefined,
+        image: post.cover ? [urlFor(post.cover).width(1200).height(630).fit('crop').url()] : undefined,
+        mainEntityOfPage: Astro.url.href
+      })}
+    </script>
   )}
 </Base>

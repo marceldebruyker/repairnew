@@ -7,30 +7,45 @@ import { EVENTS_PAGE } from '../../lib/queries'
 const { upcoming = [], past = [] } = await client.fetch(EVENTS_PAGE) ?? {}
 ---
 <Base title="Termine – Repair Café Leonberg">
-  <h1 class="pt-12 text-3xl font-bold">Termine</h1>
+  <h1 class="pt-12 text-3xl font-bold text-slate-100">Termine</h1>
 
-  <h2 class="mt-8 text-xl font-semibold text-brand-700">Kommende Termine</h2>
+  <h2 class="mt-8 text-xl font-semibold text-brand-400">Kommende Termine</h2>
   <ul class="mt-4 grid gap-6 sm:grid-cols-2">
     {upcoming.map((e: any) => (
-      <li class="rounded-2xl border border-slate-200 p-5 shadow-soft">
+      <li class="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 shadow-soft hover:shadow-lg transition">
         <a href={`/events/${e.slug?.current ?? ''}`} class="block">
-          <h3 class="text-lg font-semibold">{e.title}</h3>
-          <p class="text-sm text-slate-700">
+          <h3 class="text-lg font-semibold text-slate-100">{e.title}</h3>
+          <p class="text-sm text-slate-300">
             {new Date(e.start).toLocaleString('de-DE', { dateStyle: 'long', timeStyle: 'short' })}
             {e.location ? ` · ${e.location}` : ''}
           </p>
-          {e.hero && <img src={urlFor(e.hero).width(800).height(450).fit('crop').quality(80).url()} alt={e.title} class="mt-3 w-full aspect-[16/9] rounded-md object-cover" loading="lazy" />}
+          {e.hero && (
+            <img
+              src={urlFor(e.hero).width(800).height(450).fit('crop').quality(80).url()}
+              srcset={[
+                urlFor(e.hero).width(480).height(270).url() + ' 480w',
+                urlFor(e.hero).width(800).height(450).url() + ' 800w',
+                urlFor(e.hero).width(1200).height(675).url() + ' 1200w',
+              ].join(', ')}
+              sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
+              width="800" height="450"
+              alt={e.title}
+              class="mt-3 w-full aspect-[16/9] rounded-md object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          )}
         </a>
       </li>
     ))}
   </ul>
 
-  <h2 class="mt-12 text-xl font-semibold">Vergangene Termine</h2>
+  <h2 class="mt-12 text-xl font-semibold text-slate-100">Vergangene Termine</h2>
   <ul class="mt-4 space-y-4">
     {past.map((e: any) => (
-      <li class="border-b border-slate-200 pb-4">
-        <a class="font-medium hover:underline" href={`/events/${e.slug?.current ?? ''}`}>{e.title}</a>
-        <span class="ml-2 text-sm text-slate-600">{new Date(e.start).toLocaleDateString('de-DE')}</span>
+      <li class="border-b border-slate-700 pb-4">
+        <a class="font-medium hover:underline text-slate-200" href={`/events/${e.slug?.current ?? ''}`}>{e.title}</a>
+        <span class="ml-2 text-sm text-slate-400">{new Date(e.start).toLocaleDateString('de-DE')}</span>
       </li>
     ))}
   </ul>

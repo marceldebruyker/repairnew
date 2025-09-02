@@ -1,25 +1,62 @@
 ---
 export const prerender = false
 import Base from '../../layouts/Base.astro'
+import PT from '../../components/PortableText'
 import { client, urlFor } from '../../lib/sanity'
 import { EVENT_BY_SLUG } from '../../lib/queries'
 
 const { slug } = Astro.params
 const event = await client.fetch(EVENT_BY_SLUG, { slug })
 ---
-<Base title={`${event?.title ?? 'Event'} – Repair Café Leonberg`}>
+<Base title={`${event?.title ?? 'Event'} – Repair Café Leonberg`} image={event?.hero ? urlFor(event.hero).width(1200).height(630).fit('crop').url() : undefined}>
   {event ? (
     <article class="pt-12 max-w-3xl">
-      <h1 class="text-3xl font-bold">{event.title}</h1>
-      <p class="mt-2 text-slate-700">
+      <h1 class="text-3xl font-bold text-slate-100">{event.title}</h1>
+      <p class="mt-2 text-slate-300">
         {new Date(event.start).toLocaleString('de-DE', { dateStyle: 'full', timeStyle: 'short' })}
         {event.location ? ` · ${event.location}` : ''}
       </p>
-      {event.cancelled && <p class="mt-2 inline-block rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700">Abgesagt</p>}
-      {event.hero && <img src={urlFor(event.hero).width(1200).height(675).fit('crop').quality(80).url()} alt={event.title} class="mt-6 w-full aspect-[16/9] rounded-lg object-cover" loading="lazy" />}
+      {event.cancelled && <p class="mt-2 inline-block rounded-full bg-rose-900/20 px-2.5 py-1 text-xs font-medium text-rose-300">Abgesagt</p>}
+      {event.hero && (
+        <img
+          src={urlFor(event.hero).width(1200).height(675).fit('crop').quality(80).url()}
+          srcset={[
+            urlFor(event.hero).width(480).height(270).url() + ' 480w',
+            urlFor(event.hero).width(800).height(450).url() + ' 800w',
+            urlFor(event.hero).width(1200).height(675).url() + ' 1200w',
+          ].join(', ')}
+          sizes="(min-width: 1024px) 800px, 100vw"
+          width="1200" height="675"
+          alt={event.title}
+          class="mt-6 w-full aspect-[16/9] rounded-lg object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+      {event.description && (
+        <div class="prose prose-invert mt-6">
+          <PT value={event.description} />
+        </div>
+      )}
       {event.bookingUrl && <a href={event.bookingUrl} class="mt-6 inline-block rounded-md bg-brand-600 px-4 py-2 text-white font-semibold hover:bg-brand-700">Anmelden</a>}
     </article>
   ) : (
     <p class="pt-12">Event nicht gefunden.</p>
+  )}
+  {event && (
+    <script type="application/ld+json">
+      {JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        name: event.title,
+        startDate: event.start,
+        endDate: event.end ?? undefined,
+        eventStatus: event.cancelled ? 'https://schema.org/EventCancelled' : 'https://schema.org/EventScheduled',
+        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+        location: event.location ? { '@type': 'Place', name: event.location } : undefined,
+        image: event.hero ? [urlFor(event.hero).width(1200).height(630).fit('crop').url()] : undefined,
+        url: Astro.url.href
+      })}
+    </script>
   )}
 </Base>

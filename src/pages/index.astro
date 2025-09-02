@@ -11,7 +11,7 @@ const [event, gallery, posts] = await Promise.all([
   client.fetch(NEWS_LIST)
 ])
 ---
-<Base title="Repair Café Leonberg – Gemeinsam reparieren" description="Nächstes Repair Café, Termine, Galerie & News.">
+<Base title="Repair Café Leonberg – Gemeinsam reparieren" description="Nächstes Repair Café, Termine, Galerie & News." image={event?.hero ? urlFor(event.hero).width(1200).height(630).fit('crop').url() : undefined}>
   <section class="pt-12 pb-10">
     <p class="inline-flex items-center rounded-full bg-brand-900/20 px-3 py-1 text-xs font-medium text-brand-400">#reparierenstattwegwerfen</p>
     <h1 class="mt-6 text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-100">Repair Café <span class="text-brand-400">Leonberg</span></h1>
@@ -32,7 +32,21 @@ const [event, gallery, posts] = await Promise.all([
       </p>
       {event.cancelled && <p class="mt-2 inline-block rounded-full bg-rose-900/20 px-2.5 py-1 text-xs font-medium text-rose-400">Abgesagt</p>}
       {event.hero && (
-        <img src={urlFor(event.hero).width(1200).height(675).fit('crop').quality(80).url()} alt={event.title} class="mt-4 w-full aspect-[16/9] rounded-lg object-cover" loading="lazy" />
+        <img
+          src={urlFor(event.hero).width(1200).height(675).fit('crop').quality(80).url()}
+          srcset={[
+            urlFor(event.hero).width(480).height(270).url() + ' 480w',
+            urlFor(event.hero).width(800).height(450).url() + ' 800w',
+            urlFor(event.hero).width(1200).height(675).url() + ' 1200w',
+          ].join(', ')}
+          sizes="(min-width: 1024px) 800px, 100vw"
+          width="1200" height="675"
+          alt={event.title}
+          class="mt-4 w-full aspect-[16/9] rounded-lg object-cover"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
       )}
       <div class="mt-6 flex gap-3">
         <a href={`/events/${event.slug?.current ?? ''}`} class="rounded-md bg-brand-600 px-4 py-2 text-white font-semibold hover:bg-brand-700">Details</a>
@@ -78,7 +92,22 @@ const [event, gallery, posts] = await Promise.all([
       {(posts ?? []).map((p: any) => (
         <li class="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 shadow-soft hover:shadow-lg transition">
           <a href={`/news/${p.slug?.current ?? ''}`} class="block">
-            {p.cover && <img src={urlFor(p.cover).width(800).height(450).fit('crop').quality(80).url()} alt={p.title} class="mb-3 w-full aspect-[16/9] rounded-md object-cover" loading="lazy" />}
+            {p.cover && (
+              <img
+                src={urlFor(p.cover).width(800).height(450).fit('crop').quality(80).url()}
+                srcset={[
+                  urlFor(p.cover).width(480).height(270).url() + ' 480w',
+                  urlFor(p.cover).width(800).height(450).url() + ' 800w',
+                  urlFor(p.cover).width(1200).height(675).url() + ' 1200w',
+                ].join(', ')}
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                width="800" height="450"
+                alt={p.title}
+                class="mb-3 w-full aspect-[16/9] rounded-md object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
             <h3 class="text-lg font-semibold text-slate-100">{p.title}</h3>
             <p class="mt-1 text-sm text-slate-400">{new Date(p.publishedAt).toLocaleDateString('de-DE')}</p>
             {p.excerpt && <p class="mt-2 text-sm text-slate-300 line-clamp-3">{p.excerpt}</p>}
