@@ -1,0 +1,99 @@
+---
+export const prerender = false
+import Base from '../layouts/Base.astro'
+import { client, urlFor } from '../lib/sanity'
+import { NEXT_EVENT, HOMEPAGE_GALLERY, NEWS_LIST } from '../lib/queries'
+import '../styles/global.css'
+
+const [event, gallery, posts] = await Promise.all([
+  client.fetch(NEXT_EVENT),
+  client.fetch(HOMEPAGE_GALLERY),
+  client.fetch(NEWS_LIST)
+])
+---
+<Base title="Repair Café Leonberg – Gemeinsam reparieren" description="Nächstes Repair Café, Termine, Galerie & News.">
+  <section class="pt-12 pb-10">
+    <p class="inline-flex items-center rounded-full bg-brand-900/20 px-3 py-1 text-xs font-medium text-brand-400">#reparierenstattwegwerfen</p>
+    <h1 class="mt-6 text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-100">Repair Café <span class="text-brand-400">Leonberg</span></h1>
+    <p class="mt-4 max-w-2xl text-lg text-slate-300">Kaputtes gemeinsam reparieren – kostenlos, fair und nachhaltig.</p>
+    <div class="mt-6 flex gap-3">
+      <a href="/events" class="rounded-md bg-brand-600 px-5 py-3 text-white font-semibold hover:bg-brand-700">Termine ansehen</a>
+      <a href="#mitmachen" class="rounded-md border border-slate-700 px-5 py-3 font-semibold text-brand-400 hover:bg-slate-800">Mitmachen</a>
+    </div>
+  </section>
+
+  {event ? (
+    <section class="mb-12 rounded-2xl border border-slate-700 bg-slate-800/50 p-6 shadow-soft">
+      <p class="text-sm font-semibold text-brand-400">Nächstes Event</p>
+      <h2 class="mt-2 text-2xl font-bold text-slate-100">{event.title}</h2>
+      <p class="mt-1 text-slate-300">
+        {new Date(event.start).toLocaleString('de-DE', { dateStyle: 'full', timeStyle: 'short' })}
+        {event.location ? ` · ${event.location}` : ''}
+      </p>
+      {event.cancelled && <p class="mt-2 inline-block rounded-full bg-rose-900/20 px-2.5 py-1 text-xs font-medium text-rose-400">Abgesagt</p>}
+      {event.hero && (
+        <img src={urlFor(event.hero).width(1200).height(675).fit('crop').quality(80).url()} alt={event.title} class="mt-4 w-full aspect-[16/9] rounded-lg object-cover" loading="lazy" />
+      )}
+      <div class="mt-6 flex gap-3">
+        <a href={`/events/${event.slug?.current ?? ''}`} class="rounded-md bg-brand-600 px-4 py-2 text-white font-semibold hover:bg-brand-700">Details</a>
+        {event.bookingUrl && <a href={event.bookingUrl} class="rounded-md border border-slate-600 px-4 py-2 font-semibold text-brand-400 hover:bg-slate-700">Anmelden</a>}
+      </div>
+    </section>
+  ) : (
+    <section class="mb-12 rounded-2xl border border-slate-700 bg-slate-800/50 p-6 text-slate-300">
+      <p class="font-semibold">Derzeit kein Termin geplant.</p>
+      <p class="mt-1 text-sm">Schau bald wieder vorbei – oder folge uns auf Social.</p>
+    </section>
+  )}
+
+  <section aria-labelledby="galerie">
+    <h2 id="galerie" class="text-2xl font-bold text-slate-100">Einblicke</h2>
+    {gallery?.images?.length ? (
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        {gallery.images.map((img: any) => (
+          <li class="overflow-hidden rounded-lg">
+            <img
+              src={urlFor(img).width(800).height(600).fit('crop').quality(80).url()}
+              srcset={[
+                urlFor(img).width(480).height(360).url() + ' 480w',
+                urlFor(img).width(800).height(600).url() + ' 800w',
+                urlFor(img).width(1200).height(900).url() + ' 1200w',
+              ].join(', ')}
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              alt={img.alt}
+              class="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="mt-4 text-slate-400">Bald gibt's hier Fotos aus dem Repair Café.</p>
+    )}
+  </section>
+
+  <section class="mt-16" aria-labelledby="news">
+    <h2 id="news" class="text-2xl font-bold text-slate-100">News</h2>
+    <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {(posts ?? []).map((p: any) => (
+        <li class="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 shadow-soft hover:shadow-lg transition">
+          <a href={`/news/${p.slug?.current ?? ''}`} class="block">
+            {p.cover && <img src={urlFor(p.cover).width(800).height(450).fit('crop').quality(80).url()} alt={p.title} class="mb-3 w-full aspect-[16/9] rounded-md object-cover" loading="lazy" />}
+            <h3 class="text-lg font-semibold text-slate-100">{p.title}</h3>
+            <p class="mt-1 text-sm text-slate-400">{new Date(p.publishedAt).toLocaleDateString('de-DE')}</p>
+            {p.excerpt && <p class="mt-2 text-sm text-slate-300 line-clamp-3">{p.excerpt}</p>}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section id="mitmachen" class="mt-20 mb-10">
+    <h2 class="text-2xl font-bold text-slate-100">Mitmachen</h2>
+    <p class="mt-2 text-slate-300">Du musst kein Profi sein – Neugier reicht. Schreib uns!</p>
+    <div class="mt-4 flex gap-3">
+      <a href="mailto:info@repaircafe-leonberg.de" class="rounded-md bg-brand-600 px-4 py-2 text-white font-semibold hover:bg-brand-700">Kontakt aufnehmen</a>
+      <a href="/admin" class="rounded-md border border-slate-600 px-4 py-2 font-semibold hover:bg-slate-700 text-brand-400">Zum Admin</a>
+    </div>
+  </section>
+</Base>

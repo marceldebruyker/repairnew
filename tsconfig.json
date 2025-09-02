@@ -1,0 +1,4 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": { "baseUrl": ".", "paths": { "sanity:client": ["./node_modules/@sanity/astro/client.d.ts"] } }
+}

@@ -1,0 +1,20 @@
+---
+export const prerender = false
+import Base from '../../layouts/Base.astro'
+import { client, urlFor } from '../../lib/sanity'
+import { POST_BY_SLUG } from '../../lib/queries'
+
+const { slug } = Astro.params
+const post = await client.fetch(POST_BY_SLUG, { slug })
+---
+<Base title={`${post?.title ?? 'News'} – Repair Café Leonberg`}>
+  {post ? (
+    <article class="pt-12 max-w-3xl">
+      <h1 class="text-3xl font-bold">{post.title}</h1>
+      <p class="mt-2 text-slate-700">{new Date(post.publishedAt).toLocaleDateString('de-DE')}</p>
+      {post.cover && <img src={urlFor(post.cover).width(1200).height(675).fit('crop').quality(80).url()} alt={post.title} class="mt-6 w-full aspect-[16/9] rounded-lg object-cover" loading="lazy" />}
+    </article>
+  ) : (
+    <p class="pt-12">Beitrag nicht gefunden.</p>
+  )}
+</Base>

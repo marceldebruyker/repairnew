@@ -1,0 +1,23 @@
+---
+export const prerender = false
+import Base from '../../layouts/Base.astro'
+import { client, urlFor } from '../../lib/sanity'
+import { NEWS_LIST } from '../../lib/queries'
+
+const posts = await client.fetch(NEWS_LIST)
+---
+<Base title="News – Repair Café Leonberg">
+  <h1 class="pt-12 text-3xl font-bold">News</h1>
+  <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {(posts ?? []).map((p: any) => (
+      <li class="rounded-2xl border border-slate-200 p-5 shadow-soft hover:shadow-lg transition">
+        <a href={`/news/${p.slug?.current ?? ''}`} class="block">
+          {p.cover && <img src={urlFor(p.cover).width(800).height(450).fit('crop').quality(80).url()} alt={p.title} class="mb-3 w-full aspect-[16/9] rounded-md object-cover" loading="lazy" />}
+          <h2 class="text-lg font-semibold">{p.title}</h2>
+          <p class="mt-1 text-sm text-slate-600">{new Date(p.publishedAt).toLocaleDateString('de-DE')}</p>
+          {p.excerpt && <p class="mt-2 text-sm text-slate-700 line-clamp-3">{p.excerpt}</p>}
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>

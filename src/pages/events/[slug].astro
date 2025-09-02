@@ -1,0 +1,25 @@
+---
+export const prerender = false
+import Base from '../../layouts/Base.astro'
+import { client, urlFor } from '../../lib/sanity'
+import { EVENT_BY_SLUG } from '../../lib/queries'
+
+const { slug } = Astro.params
+const event = await client.fetch(EVENT_BY_SLUG, { slug })
+---
+<Base title={`${event?.title ?? 'Event'} – Repair Café Leonberg`}>
+  {event ? (
+    <article class="pt-12 max-w-3xl">
+      <h1 class="text-3xl font-bold">{event.title}</h1>
+      <p class="mt-2 text-slate-700">
+        {new Date(event.start).toLocaleString('de-DE', { dateStyle: 'full', timeStyle: 'short' })}
+        {event.location ? ` · ${event.location}` : ''}
+      </p>
+      {event.cancelled && <p class="mt-2 inline-block rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700">Abgesagt</p>}
+      {event.hero && <img src={urlFor(event.hero).width(1200).height(675).fit('crop').quality(80).url()} alt={event.title} class="mt-6 w-full aspect-[16/9] rounded-lg object-cover" loading="lazy" />}
+      {event.bookingUrl && <a href={event.bookingUrl} class="mt-6 inline-block rounded-md bg-brand-600 px-4 py-2 text-white font-semibold hover:bg-brand-700">Anmelden</a>}
+    </article>
+  ) : (
+    <p class="pt-12">Event nicht gefunden.</p>
+  )}
+</Base>
