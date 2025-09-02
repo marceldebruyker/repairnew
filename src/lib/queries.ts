@@ -22,14 +22,20 @@ export const HOMEPAGE_GALLERY = `
 }`
 
 export const NEWS_LIST = `
-*[_type == "post" && defined(slug.current) && dateTime(publishedAt) <= now()]
-  | order(dateTime(publishedAt) desc)[0...6]{
-  _id, title, slug, publishedAt, excerpt, cover
+*[_type == "post" 
+  && defined(slug.current)
+  && !(_id in path('drafts.**'))
+  && (!defined(publishedAt) || dateTime(publishedAt) <= now())
+]
+  | order(coalesce(dateTime(publishedAt), dateTime(_updatedAt), dateTime(_createdAt)) desc)[0...6]{
+  _id, title, slug, publishedAt, excerpt, cover,
+  "date": coalesce(publishedAt, _updatedAt, _createdAt)
 }`
 
 export const POST_BY_SLUG = `
 *[_type == "post" && slug.current == $slug][0]{
-  title, publishedAt, excerpt, cover, content
+  title, publishedAt, excerpt, cover, content,
+  "date": coalesce(publishedAt, _updatedAt, _createdAt)
 }`
 
 export const EVENT_BY_SLUG = `
