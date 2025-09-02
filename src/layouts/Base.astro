@@ -44,45 +44,44 @@ const { title = 'Repair Café Leonberg', description = 'Gemeinsam reparieren sta
         </div>
       </nav>
       
-      <!-- Mobile Menu Overlay -->
-      <div 
-        id="mobile-menu-overlay" 
-        class="md:hidden fixed inset-0 bg-black/50 backdrop-blur opacity-0 invisible transition-all duration-300 ease-in-out z-30"
-      ></div>
-      
       <!-- Mobile Menu -->
       <div 
         id="mobile-menu" 
-        class="md:hidden fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-slate-800 border-l border-slate-700 transform translate-x-full transition-transform duration-300 ease-in-out z-40"
+        class="md:hidden fixed inset-0 bg-slate-900 transform translate-x-full transition-transform duration-300 ease-in-out z-50"
       >
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-8">
-            <h2 class="text-lg font-semibold text-slate-100">Menü</h2>
+        <div class="flex flex-col h-full">
+          <!-- Header -->
+          <div class="flex items-center justify-between p-6 border-b border-slate-700">
+            <h2 class="text-xl font-bold text-slate-100">Repair Café <span class="text-brand-400">Leonberg</span></h2>
             <button 
               id="mobile-menu-close"
-              class="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+              class="p-2 hover:bg-slate-800 rounded-lg transition-colors"
               aria-label="Menü schließen"
             >
-              <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             </button>
           </div>
           
-          <nav>
-            <ul class="space-y-1">
-              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/events">Termine</a></li>
-              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/news">News</a></li>
-              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/#mitmachen">Mitmachen</a></li>
-              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/#anfahrt">Anfahrt</a></li>
-              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/#spenden">Spenden</a></li>
-              <li><a class="block py-3 px-3 text-slate-300 hover:text-brand-400 hover:bg-slate-700 rounded-lg transition-colors" href="/admin">Admin</a></li>
-            </ul>
-            
-            <div class="mt-8">
-              <a href="/events" class="block w-full text-center rounded-lg bg-brand-600 px-4 py-3 font-semibold text-white hover:bg-brand-700 transition-colors">Termin buchen</a>
-            </div>
-          </nav>
+          <!-- Menu Content -->
+          <div class="flex-1 p-6">
+            <nav>
+              <ul class="space-y-2">
+                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/events">Termine</a></li>
+                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/news">News</a></li>
+                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#mitmachen">Mitmachen</a></li>
+                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#anfahrt">Anfahrt</a></li>
+                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#spenden">Spenden</a></li>
+                <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/admin">Admin</a></li>
+              </ul>
+            </nav>
+          </div>
+          
+          <!-- CTA Button at Bottom -->
+          <div class="p-6 border-t border-slate-700">
+            <a href="/events" class="block w-full text-center rounded-lg bg-brand-600 px-6 py-4 text-lg font-semibold text-white hover:bg-brand-700 transition-colors">Termin buchen</a>
+          </div>
         </div>
       </div>
     </header>
@@ -103,18 +102,15 @@ const { title = 'Repair Café Leonberg', description = 'Gemeinsam reparieren sta
       // Mobile menu toggle functionality
       const mobileMenuButton = document.getElementById('mobile-menu-button');
       const mobileMenu = document.getElementById('mobile-menu');
-      const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
       const mobileMenuClose = document.getElementById('mobile-menu-close');
       
-      if (mobileMenuButton && mobileMenu && mobileMenuOverlay) {
+      if (mobileMenuButton && mobileMenu) {
         let isOpen = false;
         
         const openMenu = () => {
           isOpen = true;
           document.body.style.overflow = 'hidden'; // Prevent scroll
           mobileMenu.style.transform = 'translateX(0)';
-          mobileMenuOverlay.style.opacity = '1';
-          mobileMenuOverlay.style.visibility = 'visible';
           mobileMenuButton.setAttribute('aria-expanded', 'true');
           mobileMenuButton.setAttribute('aria-label', 'Menü schließen');
           
@@ -129,8 +125,6 @@ const { title = 'Repair Café Leonberg', description = 'Gemeinsam reparieren sta
           isOpen = false;
           document.body.style.overflow = '';
           mobileMenu.style.transform = 'translateX(100%)';
-          mobileMenuOverlay.style.opacity = '0';
-          mobileMenuOverlay.style.visibility = 'hidden';
           mobileMenuButton.setAttribute('aria-expanded', 'false');
           mobileMenuButton.setAttribute('aria-label', 'Menü öffnen');
           
@@ -154,9 +148,6 @@ const { title = 'Repair Café Leonberg', description = 'Gemeinsam reparieren sta
         if (mobileMenuClose) {
           mobileMenuClose.addEventListener('click', closeMenu);
         }
-        
-        // Close when clicking overlay
-        mobileMenuOverlay.addEventListener('click', closeMenu);
         
         // Close menu when clicking on links
         const mobileLinks = mobileMenu.querySelectorAll('a');
