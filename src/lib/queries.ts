@@ -1,17 +1,17 @@
 export const NEXT_EVENT = `
-*[_type == "event" && !cancelled && dateTime(start) >= now()]
-| order(dateTime(start) asc)[0]{
+*[_type == "event" && !cancelled && start >= now()]
+| order(start asc)[0]{
   _id, title, slug, start, end, location, bookingUrl, hero, description
 }`
 
 export const EVENTS_PAGE = `
 {
-  "upcoming": *[_type == "event" && !cancelled && dateTime(start) >= now()]
-    | order(dateTime(start) asc){
+  "upcoming": *[_type == "event" && !cancelled && start >= now()]
+    | order(start asc){
       _id, title, slug, start, end, location, hero
     },
-  "past": *[_type == "event" && dateTime(start) < now()]
-    | order(dateTime(start) desc)[0...200]{
+  "past": *[_type == "event" && start < now()]
+    | order(start desc)[0...200]{
       _id, title, slug, start, end, location, hero
     }
 }`
