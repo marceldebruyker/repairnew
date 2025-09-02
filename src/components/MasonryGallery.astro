@@ -1,23 +1,24 @@
 ---
 import { urlFor } from '../lib/sanity'
-interface ImageRef { alt?: string }
-const { images = [] } = Astro.props as { images: ImageRef[] }
+const images = ((Astro.props as any).images ?? []) as any[]
 
-const thumbs = images.map((img: any) => ({
-  alt: img.alt ?? 'Galeriebild',
-  thumb: {
-    src: urlFor(img).width(800).auto('format').quality(80).url(),
-    srcset: [
-      urlFor(img).width(480).auto('format').quality(70).url() + ' 480w',
-      urlFor(img).width(800).auto('format').quality(80).url() + ' 800w',
-      urlFor(img).width(1200).auto('format').quality(80).url() + ' 1200w',
-    ].join(', '),
-    sizes: '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw',
-  },
-  full: urlFor(img).width(1600).auto('format').quality(80).url(),
-}))
+const thumbs = images.map((img: any) => {
+  const src480 = urlFor(img).width(480).quality(70).url()
+  const src800 = urlFor(img).width(800).quality(80).url()
+  const src1200 = urlFor(img).width(1200).quality(80).url()
+  return {
+    alt: img.alt ?? 'Galeriebild',
+    thumb: {
+      src: src800,
+      srcset: `${src480} 480w, ${src800} 800w, ${src1200} 1200w`,
+      sizes: '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw',
+    },
+    full: urlFor(img).width(1600).quality(80).url(),
+  }
+})
+const dataJson = JSON.stringify(thumbs)
 ---
-<div data-gallery-root class="mt-6">
+<div data-gallery-root data-images={dataJson} class="mt-6">
   <div class="columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance]">
     {thumbs.map((g, idx) => (
       <button type="button" data-index={idx} class="group mb-4 w-full break-inside-avoid overflow-hidden rounded-xl ring-1 ring-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
@@ -63,7 +64,7 @@ const thumbs = images.map((img: any) => ({
       const prevBtn = root.querySelector('[data-prev]');
       const nextBtn = root.querySelector('[data-next]');
       const backdrop = root.querySelector('[data-backdrop]');
-      const data = {JSON.stringify(thumbs)};
+      const data = JSON.parse(root.getAttribute('data-images') || '[]');
       let index = 0;
 
       const show = (i) => {
