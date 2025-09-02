@@ -13,7 +13,8 @@ export default defineConfig({
     sanity({
       projectId: 'zw2uji8t',
       dataset: 'production',
-      useCdn: true,
+      // Disable CDN to avoid staleness for freshly published content
+      useCdn: false,
       studioBasePath: '/admin',
     }),
   ],
