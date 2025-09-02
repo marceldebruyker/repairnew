@@ -24,82 +24,68 @@ const pathname = Astro.url.pathname
         class="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1 group relative z-10"
         aria-label="Menü öffnen"
         aria-expanded="false"
-        aria-controls="mobile-drawer"
+        aria-controls="mobile-panel"
       >
-        <span class="w-6 h-0.5 bg-slate-300 transition-all duration-300 ease-in-out group-hover:bg-brand-400 origin-center"></span>
-        <span class="w-6 h-0.5 bg-slate-300 transition-all duration-300 ease-in-out group-hover:bg-brand-400"></span>
-        <span class="w-6 h-0.5 bg-slate-300 transition-all duration-300 ease-in-out group-hover:bg-brand-400 origin-center"></span>
+        <span data-bar class="w-6 h-0.5 bg-slate-300 transition-transform duration-300 ease-in-out group-hover:bg-brand-400 origin-center"></span>
+        <span data-bar class="w-6 h-0.5 bg-slate-300 transition-opacity duration-200 ease-in-out group-hover:bg-brand-400"></span>
+        <span data-bar class="w-6 h-0.5 bg-slate-300 transition-transform duration-300 ease-in-out group-hover:bg-brand-400 origin-center"></span>
       </button>
     </div>
   </nav>
 
-  <!-- Mobile Menu (Overlay + Drawer) -->
-  <div id="mobile-overlay" class="md:hidden fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 ease-out bg-black/60"></div>
-  <aside 
-    id="mobile-drawer" 
-    class="md:hidden fixed inset-y-0 right-0 z-50 w-5/6 max-w-sm translate-x-full transition-transform duration-300 ease-out bg-slate-900 border-l border-slate-700 shadow-xl flex flex-col"
-    role="dialog" aria-modal="true" aria-labelledby="mobile-drawer-title" tabindex="-1"
-  >
-    <!-- Header -->
-    <div class="flex items-center justify-between p-6 border-b border-slate-700">
-      <h2 id="mobile-drawer-title" class="text-xl font-bold text-slate-100">Repair Café <span class="text-brand-400">Leonberg</span></h2>
-      <button 
-        id="mobile-menu-close"
-        class="p-2 hover:bg-slate-800 rounded-lg transition-colors"
-        aria-label="Menü schließen"
-      >
-        <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-    </div>
-    
-    <!-- Menu Content -->
-    <div class="flex-1 p-6 overflow-y-auto">
-      <nav>
-        <ul class="space-y-2">
-          <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/events">Termine</a></li>
-          <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/news">News</a></li>
-          <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#mitmachen">Mitmachen</a></li>
-          <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#anfahrt">Anfahrt</a></li>
-          <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/#spenden">Spenden</a></li>
-          <li><a class="block py-4 px-4 text-lg text-slate-100 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors font-medium" href="/admin">Admin</a></li>
+  <!-- Mobile Menu (Full-screen Overlay) -->
+  <div id="mobile-root" class="md:hidden fixed inset-0 z-50 pointer-events-none" aria-hidden="true">
+    <div id="mobile-backdrop" class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm opacity-0 transition-opacity duration-300 ease-out"></div>
+    <section id="mobile-panel" role="dialog" aria-modal="true" aria-labelledby="mobile-title" tabindex="-1" class="absolute inset-0 translate-y-full transition-transform duration-300 ease-out bg-gradient-to-b from-slate-900 to-slate-950 flex flex-col">
+      <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-800">
+        <h2 id="mobile-title" class="text-xl font-bold text-slate-100">Repair Café <span class="text-brand-400">Leonberg</span></h2>
+        <button id="mobile-menu-close" class="p-2 hover:bg-slate-800 rounded-lg transition-colors" aria-label="Menü schließen">
+          <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <nav class="flex-1 overflow-y-auto px-2 sm:px-6 py-4">
+        <ul class="divide-y divide-slate-800">
+          <li><a class="block py-5 px-4 text-2xl font-semibold text-slate-100 hover:text-brand-400" href="/events">Termine</a></li>
+          <li><a class="block py-5 px-4 text-2xl font-semibold text-slate-100 hover:text-brand-400" href="/news">News</a></li>
+          <li><a class="block py-5 px-4 text-2xl font-semibold text-slate-100 hover:text-brand-400" href="/#mitmachen">Mitmachen</a></li>
+          <li><a class="block py-5 px-4 text-2xl font-semibold text-slate-100 hover:text-brand-400" href="/#anfahrt">Anfahrt</a></li>
+          <li><a class="block py-5 px-4 text-2xl font-semibold text-slate-100 hover:text-brand-400" href="/#spenden">Spenden</a></li>
+          <li><a class="block py-5 px-4 text-2xl font-semibold text-slate-100 hover:text-brand-400" href="/admin">Admin</a></li>
         </ul>
       </nav>
-    </div>
-    
-    <!-- CTA Button at Bottom -->
-    <div class="p-6 border-t border-slate-700">
-      <a href="/events" class="block w-full text-center rounded-lg bg-brand-600 px-6 py-4 text-lg font-semibold text-white hover:bg-brand-700 transition-colors">Termin buchen</a>
-    </div>
-  </aside>
+      <div class="px-6 pb-8 pt-4 border-t border-slate-800">
+        <a href="/events" class="block w-full text-center rounded-xl bg-brand-600 px-6 py-4 text-lg font-semibold text-white hover:bg-brand-700 shadow">Termin buchen</a>
+      </div>
+    </section>
+  </div>
 
   <script>
     // Mobile drawer with overlay: solid, accessible, focus-trapped
     const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const drawer = document.getElementById('mobile-drawer');
-    const overlay = document.getElementById('mobile-overlay');
+    const root = document.getElementById('mobile-root');
+    const panel = document.getElementById('mobile-panel');
+    const overlay = document.getElementById('mobile-backdrop');
     const mobileMenuClose = document.getElementById('mobile-menu-close');
     const main = document.getElementById('main-content');
-    if (mobileMenuButton && drawer && overlay) {
+    if (mobileMenuButton && root && panel && overlay) {
       let isOpen = false;
       let lastFocused = null;
       const getFocusable = (root) => root.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
       const setHamburgerState = (open) => {
-        const spans = mobileMenuButton.querySelectorAll('span');
+        const bars = mobileMenuButton.querySelectorAll('[data-bar]');
         if (open) {
-          spans[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
-          spans[1].style.opacity = '0';
-          spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+          bars[0]?.classList.add('translate-y-1.5','rotate-45');
+          bars[1]?.classList.add('opacity-0');
+          bars[2]?.classList.add('-translate-y-1.5','-rotate-45');
         } else {
-          spans[0].style.transform = 'none';
-          spans[1].style.opacity = '1';
-          spans[2].style.transform = 'none';
+          bars[0]?.classList.remove('translate-y-1.5','rotate-45');
+          bars[1]?.classList.remove('opacity-0');
+          bars[2]?.classList.remove('-translate-y-1.5','-rotate-45');
         }
       };
       const trapTab = (e) => {
         if (!isOpen || e.key !== 'Tab') return;
-        const focusables = Array.from(getFocusable(drawer));
+        const focusables = Array.from(getFocusable(panel));
         if (focusables.length === 0) return;
         const first = focusables[0];
         const last = focusables[focusables.length - 1];
@@ -116,24 +102,30 @@ const pathname = Astro.url.pathname
         isOpen = true;
         lastFocused = document.activeElement;
         document.body.style.overflow = 'hidden';
-        drawer.style.transform = 'translateX(0)';
-        overlay.classList.remove('opacity-0', 'pointer-events-none');
-        overlay.classList.add('opacity-100', 'pointer-events-auto');
+        root.classList.remove('pointer-events-none');
+        root.classList.add('pointer-events-auto');
+        panel.classList.remove('translate-y-full');
+        panel.classList.add('translate-y-0');
+        overlay.classList.remove('opacity-0');
+        overlay.classList.add('opacity-100');
         mobileMenuButton.setAttribute('aria-expanded', 'true');
         mobileMenuButton.setAttribute('aria-label', 'Menü schließen');
         setHamburgerState(true);
         main?.setAttribute('aria-hidden', 'true');
-        const focusables = getFocusable(drawer);
-        (focusables[0] || mobileMenuClose || drawer).focus();
+        const focusables = getFocusable(panel);
+        (focusables[0] || mobileMenuClose || panel).focus();
         document.addEventListener('keydown', trapTab);
       };
       const closeMenu = () => {
         if (!isOpen) return;
         isOpen = false;
         document.body.style.overflow = '';
-        drawer.style.transform = 'translateX(100%)';
-        overlay.classList.add('opacity-0', 'pointer-events-none');
-        overlay.classList.remove('opacity-100', 'pointer-events-auto');
+        panel.classList.add('translate-y-full');
+        panel.classList.remove('translate-y-0');
+        overlay.classList.add('opacity-0');
+        overlay.classList.remove('opacity-100');
+        root.classList.add('pointer-events-none');
+        root.classList.remove('pointer-events-auto');
         mobileMenuButton.setAttribute('aria-expanded', 'false');
         mobileMenuButton.setAttribute('aria-label', 'Menü öffnen');
         setHamburgerState(false);
@@ -147,10 +139,9 @@ const pathname = Astro.url.pathname
       };
       mobileMenuButton.addEventListener('click', () => (isOpen ? closeMenu() : openMenu()));
       mobileMenuClose?.addEventListener('click', closeMenu);
-      drawer.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+      panel.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) closeMenu(); });
       overlay.addEventListener('click', closeMenu);
     }
   </script>
 </header>
-
